@@ -130,12 +130,136 @@ document.addEventListener('DOMContentLoaded', function() {
         // 3秒后跳转（实际项目中这里应该是真实跳转）
         setTimeout(() => {
             showNotification('欢迎来到书城！', 'success');
-            enterBookstoreBtn.innerHTML = '<i class="fas fa-store"></i> 进入书城';
+            enterBookstoreBtn.innerHTML = '<i class="fas fa-store"></i> 立即探索';
             enterBookstoreBtn.disabled = false;
             
             // 这里可以添加实际的书城页面跳转逻辑
             // window.location.href = '/bookstore.html';
         }, 2000);
+    });
+
+    // 浏览分类按钮点击事件
+    const browseBtn = document.getElementById('browseBtn');
+    if (browseBtn) {
+        browseBtn.addEventListener('click', function() {
+            showNotification('正在加载图书分类...', 'info');
+            
+            // 模拟加载
+            browseBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 加载中...';
+            browseBtn.disabled = true;
+            
+            setTimeout(() => {
+                showNotification('已跳转到图书分类页面', 'success');
+                browseBtn.innerHTML = '<i class="fas fa-compass"></i> 浏览分类';
+                browseBtn.disabled = false;
+            }, 1500);
+        });
+    }
+
+    // 搜索功能
+    const searchBtn = document.getElementById('searchBtn');
+    const heroSearchBtn = document.getElementById('heroSearchBtn');
+    const searchInput = document.getElementById('searchInput');
+    const heroSearchInput = document.getElementById('heroSearchInput');
+
+    function handleSearch(inputElement) {
+        const query = inputElement.value.trim();
+        if (!query) {
+            showNotification('请输入搜索关键词', 'error');
+            return;
+        }
+        
+        showNotification(`正在搜索: "${query}"`, 'info');
+        
+        // 模拟搜索
+        setTimeout(() => {
+            showNotification(`找到 128 本与 "${query}" 相关的图书`, 'success');
+            inputElement.value = '';
+        }, 1500);
+    }
+
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', () => handleSearch(searchInput));
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearch(searchInput);
+        });
+    }
+
+    if (heroSearchBtn && heroSearchInput) {
+        heroSearchBtn.addEventListener('click', () => handleSearch(heroSearchInput));
+        heroSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearch(heroSearchInput);
+        });
+    }
+
+    // 购物车功能
+    const cartBtn = document.getElementById('cartBtn');
+    const cartCount = document.querySelector('.cart-count');
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+
+    if (cartBtn) {
+        cartBtn.addEventListener('click', function() {
+            showNotification('正在打开购物车...', 'info');
+            // 实际项目中这里应该跳转到购物车页面
+        });
+    }
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const bookCard = this.closest('.book-card');
+            const bookTitle = bookCard.querySelector('.book-title').textContent;
+            const currentCount = parseInt(cartCount.textContent);
+            
+            // 更新购物车数量
+            cartCount.textContent = currentCount + 1;
+            cartCount.style.animation = 'bounce 0.5s';
+            
+            // 显示添加成功通知
+            showNotification(`已添加 "${bookTitle}" 到购物车`, 'success');
+            
+            // 添加动画效果
+            this.innerHTML = '<i class="fas fa-check"></i> 已添加';
+            this.style.background = '#2ecc71';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-cart-plus"></i> 加入购物车';
+                this.style.background = '';
+                this.disabled = false;
+            }, 2000);
+        });
+    });
+
+    // 收藏夹功能
+    const wishlistBtn = document.getElementById('wishlistBtn');
+    if (wishlistBtn) {
+        wishlistBtn.addEventListener('click', function() {
+            showNotification('正在打开收藏夹...', 'info');
+        });
+    }
+
+    // 通知功能
+    const notificationBtn = document.getElementById('notificationBtn');
+    if (notificationBtn) {
+        notificationBtn.addEventListener('click', function() {
+            showNotification('您有 3 条未读通知', 'info');
+            // 实际项目中这里应该显示通知列表
+        });
+    }
+
+    // 导航菜单点击效果
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.classList.contains('active')) return;
+            
+            e.preventDefault();
+            navLinks.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+            
+            const pageName = this.textContent.trim();
+            showNotification(`正在跳转到 ${pageName} 页面...`, 'info');
+        });
     });
 
     // 添加动画效果到卡片
@@ -147,6 +271,30 @@ document.addEventListener('DOMContentLoaded', function() {
         
         card.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // 图书卡片悬停效果
+    const bookCards = document.querySelectorAll('.book-card');
+    bookCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // 特色功能卡片悬停效果
+    const featureItems = document.querySelectorAll('.feature-item');
+    featureItems.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        item.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
         });
     });
 
@@ -212,6 +360,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 to {
                     transform: translateX(0);
                     opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+            
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0);
+                }
+                40% {
+                    transform: translateY(-10px);
+                }
+                60% {
+                    transform: translateY(-5px);
                 }
             }
             
